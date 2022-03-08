@@ -1,1 +1,1 @@
-Experiments of image thinning algorithms.
+Experiments on image thinning algorithms.
