@@ -2,9 +2,9 @@
 #define GRIDWIDGET_H
 
 #include <QWidget>
+#include <opencv2/core.hpp>
 
 #include "globals.h"
-#include "ArrayND.hpp"
 
 struct Size {
     unsigned_t x, y;
@@ -13,6 +13,7 @@ struct Size {
 class GridWidget : public QWidget
 {
     Q_OBJECT
+
 public:
 
     explicit GridWidget(QWidget *parent = nullptr);
@@ -23,15 +24,13 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
-    void paintEvent(QPaintEvent *_) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
 
-    unsigned_t W, H;
+    unsigned_t W_, H_;
 
-    bool inSelectionState;
-
-    ArrayND<uchar,2> grid;
+    cv::Mat grid_;
 
     void updateCells(QMouseEvent *event);
 
@@ -41,8 +40,11 @@ private:
     void drawGridLines(QPainter* painter) const;
     void drawCells(QPainter* painter) const;
 
-signals:
+public slots:
 
+    void clear();
+    void step();
+    void result();
 };
 
 #endif // GRIDWIDGET_H

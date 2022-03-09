@@ -15,6 +15,7 @@ class ThinningMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
     ThinningMainWindow(QWidget *parent = nullptr);
     ~ThinningMainWindow();
 
@@ -23,6 +24,6 @@ private:
 
     GridWidget* gridWidget;
 
-    void createMenus();
+    void createToolbar();
 };
 #endif // THINNINGMAINWINDOW_H

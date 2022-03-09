@@ -6,10 +6,9 @@
 
 GridWidget::GridWidget(QWidget *parent) : QWidget(parent)
 {
-    W = Config::gridWidth;
-    H = Config::gridHeight;
-    grid.updateDimSizes(H,W);
-    inSelectionState = false;
+    W_ = Config::gridWidth;
+    H_ = Config::gridHeight;
+    grid_ = cv::Mat::zeros(cv::Size(W_, H_), cv::DataType<uchar>::type);
 }
 
 void GridWidget::mousePressEvent(QMouseEvent *event)
@@ -43,14 +42,14 @@ void GridWidget::updateCells(QMouseEvent *event)
     unsigned_t cellWidth = sz.x, cellHeight = sz.y;
     unsigned_t col = event->x() / cellWidth;
     unsigned_t row = event->y() / cellHeight;
-    grid(row, col) = !deselect;
+    grid_.at<uchar>(row, col) = !deselect;
 }
 
 Size GridWidget::getSize() const
 {
     Size sz;
-    sz.x = width() / W;
-    sz.y = height() / H;
+    sz.x = width() / W_;
+    sz.y = height() / H_;
     return sz;
 }
 
@@ -101,9 +100,9 @@ void GridWidget::drawCells(QPainter *painter) const
 
     painter->save();
     painter->setBrush(brush);
-    for (unsigned_t r = 0; r < H; r++) {
-        for (unsigned_t c = 0; c < W; c++) {
-            if (grid(r,c)) {
+    for (unsigned_t r = 0; r < H_; r++) {
+        for (unsigned_t c = 0; c < W_; c++) {
+            if (grid_.at<uchar>(r,c)) {
                 unsigned_t x = c * cellWidth;
                 unsigned_t y = r * cellHeight;
                 painter->drawRect(x, y, cellWidth, cellHeight);
@@ -111,4 +110,20 @@ void GridWidget::drawCells(QPainter *painter) const
         }
     }
     painter->restore();
+}
+
+void GridWidget::clear()
+{
+    grid_.setTo(0);
+    update();
+}
+
+void GridWidget::step()
+{
+    update();
+}
+
+void GridWidget::result()
+{
+    update();
 }
