@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+#include "config.h"
+#include "gridwidget.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class ThinningMainWindow; }
 QT_END_NAMESPACE
@@ -17,5 +20,9 @@ public:
 
 private:
     Ui::ThinningMainWindow *ui;
+
+    GridWidget* gridWidget;
+
+    void createMenus();
 };
 #endif // THINNINGMAINWINDOW_H
