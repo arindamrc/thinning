@@ -13,11 +13,6 @@ GridWidget::GridWidget(QWidget *parent) : QWidget(parent)
     output_ = cv::Mat::zeros(cv::Size(W_, H_), cv::DataType<uchar>::type);
 }
 
-bool GridWidget::isUpdateEnabled() const
-{
-    return enableUpdate_;
-}
-
 void GridWidget::mousePressEvent(QMouseEvent *event)
 {
     if (enableUpdate_) {
@@ -131,13 +126,13 @@ void GridWidget::clear()
 
 void GridWidget::iterate()
 {
-    thinner_.iteration(grid_, ParallelIterativeThinning::ZHANG_SUEN_NWSE);
+    thinner_.iteration(grid_, algorithm_);
     update();
 }
 
 void GridWidget::subIterate()
 {
-    thinner_.subIteration(grid_, ParallelIterativeThinning::ZHANG_SUEN_NWSE, pass);
+    thinner_.subIteration(grid_, algorithm_, pass);
     pass = (pass + 1) % 2;
     update();
 }
@@ -145,7 +140,7 @@ void GridWidget::subIterate()
 void GridWidget::result()
 {
     output_.setTo(0);
-    thinner_.compute(grid_, output_, ParallelIterativeThinning::ZHANG_SUEN_NWSE);
+    thinner_.compute(grid_, output_, algorithm_);
     grid_ = output_.clone();
     update();
 }
@@ -153,4 +148,9 @@ void GridWidget::result()
 void GridWidget::toggleUpdate()
 {
     enableUpdate_ = !enableUpdate_;
+}
+
+void GridWidget::switchAlgorithm(int idx)
+{
+    algorithm_ = static_cast<ParallelIterativeThinning::ThinningAlgorithm>(idx);
 }

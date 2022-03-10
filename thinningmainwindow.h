@@ -2,6 +2,7 @@
 #define THINNINGMAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSignalMapper>
 
 #include "config.h"
 #include "gridwidget.h"
@@ -20,10 +21,22 @@ public:
     ~ThinningMainWindow();
 
 private:
+
     Ui::ThinningMainWindow *ui;
 
     GridWidget* gridWidget;
 
-    void createToolbar();
+    QSignalMapper algorithmSelectionMapper;
+
+    void createOperationsToolbar();
+    void createAlgorithmsToolbar();
+    void createStatusBar();
+
+    QString getAlgoName(const int idx);
+
+private slots:
+
+    void selectAlgorithm(int idx);
+
 };
 #endif // THINNINGMAINWINDOW_H

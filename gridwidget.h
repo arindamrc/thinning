@@ -19,7 +19,13 @@ public:
 
     explicit GridWidget(QWidget *parent = nullptr);
 
-    bool isUpdateEnabled() const;
+    inline bool isUpdateEnabled() const {
+        return enableUpdate_;
+    }
+
+    inline ParallelIterativeThinning::ThinningAlgorithm getAlgorithm() const {
+        return algorithm_;
+    }
 
 protected:
 
@@ -36,6 +42,8 @@ private:
     uchar pass = 0;
 
     unsigned_t W_, H_;
+
+    ParallelIterativeThinning::ThinningAlgorithm algorithm_ = ParallelIterativeThinning::ZHANG_SUEN_NWSE;
 
     cv::Mat grid_;
 
@@ -58,6 +66,7 @@ public slots:
     void subIterate();
     void result();
     void toggleUpdate();
+    void switchAlgorithm(int idx);
 };
 
 #endif // GRIDWIDGET_H
