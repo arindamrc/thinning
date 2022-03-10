@@ -30,7 +30,7 @@ public:
      * @param result
      * @param algorithm
      */
-    void compute(const cv::Mat img, cv::Mat result, const ThinningAlgorithm algorithm, bool parallelized = false);
+    void compute(const cv::Mat img, cv::Mat output, const ThinningAlgorithm algorithm, bool parallelized = false);
 
 private:
 
@@ -46,12 +46,20 @@ private:
     cv::Mat M_, P_, D_;
 
     /**
+     * @brief iteration
+     * @param I
+     * @param algorithm
+     * @param pass
+     */
+    void iteration(cv::Mat output, const ThinningAlgorithm algorithm);
+
+    /**
      * @brief _compute
      * @param img
      * @param result
      * @param algorithm
      */
-    void iteration(cv::Mat I, const ThinningAlgorithm algorithm, const uchar pass);
+    void subIteration(cv::Mat I, const ThinningAlgorithm algorithm, const uchar pass);
 
     /**
      * @brief getNeighborhood

@@ -6,21 +6,32 @@
 
 GridWidget::GridWidget(QWidget *parent) : QWidget(parent)
 {
+    enableUpdate_ = false;
     W_ = Config::gridWidth;
     H_ = Config::gridHeight;
     grid_ = cv::Mat::zeros(cv::Size(W_, H_), cv::DataType<uchar>::type);
+    output_ = cv::Mat::zeros(cv::Size(W_, H_), cv::DataType<uchar>::type);
+}
+
+bool GridWidget::isUpdateEnabled() const
+{
+    return enableUpdate_;
 }
 
 void GridWidget::mousePressEvent(QMouseEvent *event)
 {
-    updateCells(event);
+    if (enableUpdate_) {
+        updateCells(event);
+    }
     QWidget::mousePressEvent(event);
     update();
 }
 
 void GridWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    updateCells(event);
+    if (enableUpdate_) {
+        updateCells(event);
+    }
     QWidget::mouseMoveEvent(event);
     update();
 }
@@ -118,12 +129,25 @@ void GridWidget::clear()
     update();
 }
 
-void GridWidget::step()
+void GridWidget::iterate()
+{
+    update();
+}
+
+void GridWidget::subIterate()
 {
     update();
 }
 
 void GridWidget::result()
 {
+    output_.setTo(0);
+    thinner_.compute(grid_, output_, ParallelIterativeThinning::ZHANG_SUEN_NWSE);
+    grid_ = output_.clone();
     update();
+}
+
+void GridWidget::toggleUpdate()
+{
+    enableUpdate_ = !enableUpdate_;
 }
