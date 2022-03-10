@@ -88,11 +88,17 @@ void ThinningMainWindow::createAlgorithmsToolbar()
     guoHallAction->setChecked(gridWidget->getAlgorithm() == ParallelIterativeThinning::GUO_HALL);
     connect(guoHallAction, SIGNAL(triggered()), &algorithmSelectionMapper, SLOT(map()));
 
-    QAction *luWangAction = algoActionGroup->addAction(tr("LU WANG"));
-    algosToolBar->addAction(luWangAction);
-    luWangAction->setCheckable(true);
-    luWangAction->setChecked(gridWidget->getAlgorithm() == ParallelIterativeThinning::LU_WANG);
-    connect(luWangAction, SIGNAL(triggered()), &algorithmSelectionMapper, SLOT(map()));
+    QAction *luWangNWSEAction = algoActionGroup->addAction(tr("LU WANG NWSE"));
+    algosToolBar->addAction(luWangNWSEAction);
+    luWangNWSEAction->setCheckable(true);
+    luWangNWSEAction->setChecked(gridWidget->getAlgorithm() == ParallelIterativeThinning::LU_WANG_NWSE);
+    connect(luWangNWSEAction, SIGNAL(triggered()), &algorithmSelectionMapper, SLOT(map()));
+
+    QAction *luWangNESWAction = algoActionGroup->addAction(tr("LU WANG NESW"));
+    algosToolBar->addAction(luWangNESWAction);
+    luWangNESWAction->setCheckable(true);
+    luWangNESWAction->setChecked(gridWidget->getAlgorithm() == ParallelIterativeThinning::LU_WANG_NESW);
+    connect(luWangNESWAction, SIGNAL(triggered()), &algorithmSelectionMapper, SLOT(map()));
 
     QAction *zhangWangAction = algoActionGroup->addAction(tr("ZHANG WANG"));
     algosToolBar->addAction(zhangWangAction);
@@ -127,7 +133,8 @@ void ThinningMainWindow::createAlgorithmsToolbar()
     algorithmSelectionMapper.setMapping(zhanSuenNWSEAction, ParallelIterativeThinning::ZHANG_SUEN_NWSE);
     algorithmSelectionMapper.setMapping(zhanSuenNESWAction, ParallelIterativeThinning::ZHANG_SUEN_NESW);
     algorithmSelectionMapper.setMapping(guoHallAction, ParallelIterativeThinning::GUO_HALL);
-    algorithmSelectionMapper.setMapping(luWangAction, ParallelIterativeThinning::LU_WANG);
+    algorithmSelectionMapper.setMapping(luWangNWSEAction, ParallelIterativeThinning::LU_WANG_NWSE);
+    algorithmSelectionMapper.setMapping(luWangNESWAction, ParallelIterativeThinning::LU_WANG_NESW);
     algorithmSelectionMapper.setMapping(zhangWangAction, ParallelIterativeThinning::ZHANG_WANG);
     algorithmSelectionMapper.setMapping(kwkAction, ParallelIterativeThinning::KWK);
     algorithmSelectionMapper.setMapping(hilditchAction, ParallelIterativeThinning::HILDITCH);
@@ -145,59 +152,7 @@ void ThinningMainWindow::createStatusBar()
 
 QString ThinningMainWindow::getAlgoName(const int idx)
 {
-    ParallelIterativeThinning::ThinningAlgorithm cur = static_cast<ParallelIterativeThinning::ThinningAlgorithm>(idx);
-    switch (cur) {
-    case ParallelIterativeThinning::ZHANG_SUEN_NWSE:
-    {
-        return "ZHANG SUEN NWSE";
-    }
-    break;
-    case ParallelIterativeThinning::ZHANG_SUEN_NESW:
-    {
-        return "ZHANG SUEN NESW";
-    }
-    break;
-    case ParallelIterativeThinning::GUO_HALL:
-    {
-        return "GUO HALL";
-    }
-    break;
-    case ParallelIterativeThinning::LU_WANG:
-    {
-        return "LU WANG";
-    }
-    break;
-    case ParallelIterativeThinning::ZHANG_WANG:
-    {
-        return "ZHANG WANG";
-    }
-    break;
-    case ParallelIterativeThinning::KWK:
-    {
-        return "KWK";
-    }
-    break;
-    case ParallelIterativeThinning::HILDITCH:
-    {
-        return "HILDITCH";
-    }
-    break;
-    case ParallelIterativeThinning::APARAJEYA_SANYAL:
-    {
-        return "APARAJEYA SANYAL";
-    }
-    break;
-    case ParallelIterativeThinning::BOUDAOUD_SIDER_TARI:
-    {
-        return "BOUDAOUD SIDER TARI";
-    }
-    break;
-    default:
-        return "";
-        break;
-    }
-
-    return "";
+    return gridWidget->getAlgoName(idx);
 }
 
 void ThinningMainWindow::selectAlgorithm(int idx)

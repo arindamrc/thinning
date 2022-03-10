@@ -10,7 +10,7 @@ GridWidget::GridWidget(QWidget *parent) : QWidget(parent)
     W_ = Config::gridWidth;
     H_ = Config::gridHeight;
     grid_ = cv::Mat::zeros(cv::Size(W_, H_), cv::DataType<uchar>::type);
-    output_ = cv::Mat::zeros(cv::Size(W_, H_), cv::DataType<uchar>::type);
+    buffer_ = cv::Mat::zeros(cv::Size(W_, H_), cv::DataType<uchar>::type);
 }
 
 void GridWidget::mousePressEvent(QMouseEvent *event)
@@ -100,15 +100,24 @@ void GridWidget::drawCells(QPainter *painter) const
     Size sz = getSize();
     unsigned_t cellWidth = sz.x, cellHeight = sz.y;
 
-    QBrush brush;
-    brush.setColor(Qt::red);
-    brush.setStyle(Qt::SolidPattern);
+    QBrush redBrush;
+    redBrush.setColor(Qt::red);
+    redBrush.setStyle(Qt::SolidPattern);
+
+    QBrush greenBrush;
+    greenBrush.setColor(Qt::green);
+    greenBrush.setStyle(Qt::SolidPattern);
 
     painter->save();
-    painter->setBrush(brush);
     for (unsigned_t r = 0; r < H_; r++) {
         for (unsigned_t c = 0; c < W_; c++) {
             if (grid_.at<uchar>(r,c)) {
+                painter->setBrush(redBrush);
+                unsigned_t x = c * cellWidth;
+                unsigned_t y = r * cellHeight;
+                painter->drawRect(x, y, cellWidth, cellHeight);
+            } else if (buffer_.at<uchar>(r,c)) {
+                painter->setBrush(greenBrush);
                 unsigned_t x = c * cellWidth;
                 unsigned_t y = r * cellHeight;
                 painter->drawRect(x, y, cellWidth, cellHeight);
@@ -121,27 +130,33 @@ void GridWidget::drawCells(QPainter *painter) const
 void GridWidget::clear()
 {
     grid_.setTo(0);
+    buffer_.setTo(0);
+    iterCount = 0;
     update();
 }
 
 void GridWidget::iterate()
 {
+    buffer_ = grid_.clone();
     thinner_.iteration(grid_, algorithm_);
+    iterCount += 2;
     update();
 }
 
 void GridWidget::subIterate()
 {
+    buffer_ = grid_.clone();
     thinner_.subIteration(grid_, algorithm_, pass);
     pass = (pass + 1) % 2;
+    iterCount++;
     update();
 }
 
 void GridWidget::result()
 {
-    output_.setTo(0);
-    thinner_.compute(grid_, output_, algorithm_);
-    grid_ = output_.clone();
+    buffer_.setTo(0);
+    thinner_.compute(grid_, buffer_, algorithm_);
+    grid_ = buffer_.clone();
     update();
 }
 

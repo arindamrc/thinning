@@ -27,6 +27,14 @@ public:
         return algorithm_;
     }
 
+    inline uint getIterCount() const {
+        return iterCount;
+    }
+
+    inline QString getAlgoName(int idx) {
+        return thinner_.getAlgoName(idx);
+    }
+
 protected:
 
     void mousePressEvent(QMouseEvent *event) override;
@@ -41,13 +49,15 @@ private:
 
     uchar pass = 0;
 
+    uint iterCount = 0; // Counts each subpass as an iteration.
+
     unsigned_t W_, H_;
 
     ParallelIterativeThinning::ThinningAlgorithm algorithm_ = ParallelIterativeThinning::ZHANG_SUEN_NWSE;
 
     cv::Mat grid_;
 
-    cv::Mat output_;
+    cv::Mat buffer_;
 
     ParallelIterativeThinning thinner_;
 

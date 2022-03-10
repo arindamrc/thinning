@@ -14,7 +14,8 @@ public:
         ZHANG_SUEN_NWSE,
         ZHANG_SUEN_NESW,
         GUO_HALL,
-        LU_WANG,
+        LU_WANG_NWSE,
+        LU_WANG_NESW,
         ZHANG_WANG,
         KWK,
         HILDITCH,
@@ -47,6 +48,13 @@ public:
      * @param algorithm
      */
     void subIteration(cv::Mat I, const ThinningAlgorithm algorithm, const uchar pass);
+
+    /**
+     * @brief getAlgoName
+     * @param idx
+     * @return
+     */
+    QString getAlgoName(const int idx);
 
 private:
 

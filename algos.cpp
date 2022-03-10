@@ -40,7 +40,7 @@ void ParallelIterativeThinning::compute(const cv::Mat img, cv::Mat output, const
 void ParallelIterativeThinning::iteration(cv::Mat I, const ParallelIterativeThinning::ThinningAlgorithm algorithm)
 {
     subIteration(I, algorithm, 0);
-    if (algorithm == ZHANG_SUEN_NWSE || algorithm == ZHANG_SUEN_NESW || algorithm == GUO_HALL || algorithm == LU_WANG || algorithm == KWK || algorithm == BOUDAOUD_SIDER_TARI)
+    if (algorithm == ZHANG_SUEN_NWSE || algorithm == ZHANG_SUEN_NESW || algorithm == GUO_HALL || algorithm == LU_WANG_NWSE || algorithm == LU_WANG_NESW || algorithm == KWK || algorithm == BOUDAOUD_SIDER_TARI)
     {
         subIteration(I, algorithm, 1);
     }
@@ -82,6 +82,63 @@ void ParallelIterativeThinning::subIteration(cv::Mat I, const ParallelIterativeT
     }
 
     I &= M_;
+}
+
+QString ParallelIterativeThinning::getAlgoName(const int idx)
+{
+    ParallelIterativeThinning::ThinningAlgorithm cur = static_cast<ParallelIterativeThinning::ThinningAlgorithm>(idx);
+    switch (cur) {
+    case ParallelIterativeThinning::ZHANG_SUEN_NWSE:
+    {
+        return "ZHANG SUEN NWSE";
+    }
+    break;
+    case ParallelIterativeThinning::ZHANG_SUEN_NESW:
+    {
+        return "ZHANG SUEN NESW";
+    }
+    break;
+    case ParallelIterativeThinning::GUO_HALL:
+    {
+        return "GUO HALL";
+    }
+    break;
+    case ParallelIterativeThinning::LU_WANG_NWSE:
+    {
+        return "LU WANG";
+    }
+    break;
+    case ParallelIterativeThinning::ZHANG_WANG:
+    {
+        return "ZHANG WANG";
+    }
+    break;
+    case ParallelIterativeThinning::KWK:
+    {
+        return "KWK";
+    }
+    break;
+    case ParallelIterativeThinning::HILDITCH:
+    {
+        return "HILDITCH";
+    }
+    break;
+    case ParallelIterativeThinning::APARAJEYA_SANYAL:
+    {
+        return "APARAJEYA SANYAL";
+    }
+    break;
+    case ParallelIterativeThinning::BOUDAOUD_SIDER_TARI:
+    {
+        return "BOUDAOUD SIDER TARI";
+    }
+    break;
+    default:
+        return "";
+        break;
+    }
+
+    return "";
 }
 
 uchar ParallelIterativeThinning::applyAlgorithm(const Neighborhood& n, const ParallelIterativeThinning::ThinningAlgorithm algorithm, const uchar pass, const int i, const int j) {
@@ -137,7 +194,7 @@ uchar ParallelIterativeThinning::applyAlgorithm(const Neighborhood& n, const Par
         }
     }
     break;
-    case LU_WANG:
+    case LU_WANG_NWSE:
     {
         int A = (n.p2 == 0 && n.p3 == 1) + (n.p3 == 0 && n.p4 == 1) +
                 (n.p4 == 0 && n.p5 == 1) + (n.p5 == 0 && n.p6 == 1) +
@@ -154,6 +211,23 @@ uchar ParallelIterativeThinning::applyAlgorithm(const Neighborhood& n, const Par
         }
     }
     break;
+    case LU_WANG_NESW:
+    {
+        int A = (n.p2 == 0 && n.p3 == 1) + (n.p3 == 0 && n.p4 == 1) +
+                (n.p4 == 0 && n.p5 == 1) + (n.p5 == 0 && n.p6 == 1) +
+                (n.p6 == 0 && n.p7 == 1) + (n.p7 == 0 && n.p8 == 1) +
+                (n.p8 == 0 && n.p9 == 1) + (n.p9 == 0 && n.p2 == 1);
+        int B  = n.p2 + n.p3 + n.p4 + n.p5 + n.p6 + n.p7 + n.p8 + n.p9;
+        int m1 = pass == 0 ? (n.p2 * n.p6 * n.p8) : (n.p2 * n.p4 * n.p8);
+        int m2 = pass == 0 ? (n.p4 * n.p6 * n.p8) : (n.p2 * n.p4 * n.p6);
+        if (n.p1 == 1 && A == 1 && (B >= 3 && B <= 6) && m1 == 0 && m2 == 0) {
+            return 0;
+        }
+        else {
+            return 1;
+        }
+    }
+        break;
     case ZHANG_WANG:
     {
         int A = (n.p2 == 0 && n.p3 == 1) + (n.p3 == 0 && n.p4 == 1) +
