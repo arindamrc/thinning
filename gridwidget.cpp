@@ -131,11 +131,14 @@ void GridWidget::clear()
 
 void GridWidget::iterate()
 {
+    thinner_.iteration(grid_, ParallelIterativeThinning::ZHANG_SUEN_NWSE);
     update();
 }
 
 void GridWidget::subIterate()
 {
+    thinner_.subIteration(grid_, ParallelIterativeThinning::ZHANG_SUEN_NWSE, pass);
+    pass = (pass + 1) % 2;
     update();
 }
 

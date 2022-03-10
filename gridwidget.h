@@ -33,6 +33,8 @@ private:
 
     bool enableUpdate_ = false;
 
+    uchar pass = 0;
+
     unsigned_t W_, H_;
 
     cv::Mat grid_;

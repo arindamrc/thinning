@@ -7,7 +7,8 @@ void ParallelIterativeThinning::compute(const cv::Mat img, cv::Mat output, const
         return;
     }
     if (output.size() != img.size() || output.type() != CV_8UC1) {
-        output = cv::Mat(img.rows, img.cols, CV_8UC1);
+        qCritical() << "Memory not allocated for output mat!!";
+        return;
     }
     if (M_.size() != img.size() || M_.type() != CV_8UC1) {
         M_ = cv::Mat(img.rows, img.cols, CV_8UC1);
@@ -31,22 +32,26 @@ void ParallelIterativeThinning::compute(const cv::Mat img, cv::Mat output, const
 
     do {
         iteration(output, algorithm);
+        cv::absdiff(output, P_, D_);
+        output.copyTo(P_);
     } while (cv::countNonZero(D_) > 0);
 }
 
-void ParallelIterativeThinning::iteration(cv::Mat output, const ParallelIterativeThinning::ThinningAlgorithm algorithm)
+void ParallelIterativeThinning::iteration(cv::Mat I, const ParallelIterativeThinning::ThinningAlgorithm algorithm)
 {
-    subIteration(output, algorithm, 0);
-    if (algorithm == ZHANG_SUEN_NWSE || algorithm == GUO_HALL || algorithm == LU_WANG || algorithm == KWK || algorithm == BOUDAOUD_SIDER_TARI)
+    subIteration(I, algorithm, 0);
+    if (algorithm == ZHANG_SUEN_NWSE || algorithm == ZHANG_SUEN_NESW || algorithm == GUO_HALL || algorithm == LU_WANG || algorithm == KWK || algorithm == BOUDAOUD_SIDER_TARI)
     {
-        subIteration(output, algorithm, 1);
+        subIteration(I, algorithm, 1);
     }
-    cv::absdiff(output, P_, D_);
-    output.copyTo(P_);
 }
 
 void ParallelIterativeThinning::subIteration(cv::Mat I, const ParallelIterativeThinning::ThinningAlgorithm algorithm, const uchar pass)
 {
+    if (M_.size() != I.size() || M_.type() != CV_8UC1) {
+        M_ = cv::Mat(I.rows, I.cols, CV_8UC1);
+    }
+
     M_ = cv::Scalar(0);
 
     parallelized_ = true;

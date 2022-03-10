@@ -32,6 +32,22 @@ public:
      */
     void compute(const cv::Mat img, cv::Mat output, const ThinningAlgorithm algorithm, bool parallelized = false);
 
+    /**
+     * @brief iteration
+     * @param I
+     * @param algorithm
+     * @param pass
+     */
+    void iteration(cv::Mat I, const ThinningAlgorithm algorithm);
+
+    /**
+     * @brief _compute
+     * @param img
+     * @param result
+     * @param algorithm
+     */
+    void subIteration(cv::Mat I, const ThinningAlgorithm algorithm, const uchar pass);
+
 private:
 
     struct Neighborhood
@@ -44,22 +60,6 @@ private:
 
     // Marker matrix; serves as a buffer for the intermediate steps.
     cv::Mat M_, P_, D_;
-
-    /**
-     * @brief iteration
-     * @param I
-     * @param algorithm
-     * @param pass
-     */
-    void iteration(cv::Mat output, const ThinningAlgorithm algorithm);
-
-    /**
-     * @brief _compute
-     * @param img
-     * @param result
-     * @param algorithm
-     */
-    void subIteration(cv::Mat I, const ThinningAlgorithm algorithm, const uchar pass);
 
     /**
      * @brief getNeighborhood
